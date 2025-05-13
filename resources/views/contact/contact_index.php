@@ -16,7 +16,7 @@
         </svg>
         Contáctanos aquí.
       </h2>
-    <form action="<?php echo BASE_URL . '/contact.php'?>" method="post">
+    <form action="<?php echo BASE_URL . '/contacts/store.php'?>" method="post">
       <label for="correo">Tu correo electrónico <span style="color: red">*</span></label><br /><br />
       <input type="email" id="correo" name="email" required /><br /><br />
 
@@ -24,7 +24,7 @@
       <input type="text" id="nombre" name="nombre" required /><br /><br />
 
       <label for="mensaje">Tu mensaje <span style="color: red">*</span></label><br /><br />
-      <textarea id="mensaje" name="mensaje" required></textarea><br /><br />
+      <textarea id="mensaje" name="mensaje" required style="resize: none; width: 400px; height: 120px;"></textarea><br /><br />
 
       <button type="submit">Enviar Información de Contacto</button>
     </form>

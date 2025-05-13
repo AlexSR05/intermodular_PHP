@@ -7,16 +7,13 @@ use App\Core\DB;
 use App\Core\Model;
 use App\Core\QueryBuilder;
 
-class Contact
+class Contact extends Model
 {
-    protected ?int $id = null;
-    protected string $email;
-    protected string $nombre;
-    protected string $mensaje;   
-    protected static string $table = 'contacto';
+
+    protected static string $table = 'contacts';
     protected static array $fillable = ['email', 'nombre', 'mensaje'];
 
-        public function insert(): void
+    public function insert(): void
     {
         $sql = "INSERT INTO " . self::$table . " (email, nombre, mensaje)
                 VALUES (?, ?, ?)";
@@ -26,5 +23,17 @@ class Contact
             $this->mensaje,
         ];
         $this->id = DB::insert($sql, $params);
-        }
+    }
+
+    public function update(): void
+    {
+        $sql = "UPDATE " . self::$table . " SET email = ?, nombre = ?, mensaje = ? WHERE id = ?";
+        $params = [
+            $this->email,
+            $this->nombre,
+            $this->mensaje,
+            $this->id,
+        ];
+        DB::update($sql, $params);
+    }
 }

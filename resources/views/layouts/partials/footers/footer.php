@@ -42,7 +42,7 @@
       </svg>
       YouTube
     </a>
-    <a href="../contacto/contacto.html" target="_blank">
+    <a href="<?php echo BASE_URL . '/contacts/index.php' ?>" target="_blank">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

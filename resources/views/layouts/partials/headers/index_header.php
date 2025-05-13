@@ -7,7 +7,7 @@
     <a href="<?php echo BASE_URL . '/instrumentales/instrumentales_index.php' ?>">Instrumentales</a>
     <a href="<?php echo BASE_URL . '/instrumentales/index.php#valoraciones' ?>">Valóranos</a>
     <a href="<?php echo BASE_URL . '/instrumentales/index.php#colaboraciones' ?>">Colaboraciones</a>
-    <a href="<?php echo BASE_URL . '/contact.php' ?>">Contacto</a>
+    <a href="<?php echo BASE_URL . '/contacts/index.php' ?>">Contacto</a>
     <a href="../productos/cart.html">
       <svg
         xmlns="http://www.w3.org/2000/svg"
