@@ -198,3 +198,22 @@ a {
   padding: 2rem;
 }
 
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.user-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

@@ -21,9 +21,45 @@ class InstrumentalController
 
     public function showAll(): void
     {
-        $instrumentales = Instrumental::all();
-        //echo "<pre>";
-        //print_r($instrumentales); echo "</pre>";
+        $search = request()->search ?? '';
+        
+        if (!empty($search)) {
+            // Búsqueda por título, género o productor
+            $instrumentales = Instrumental::where('titulo', 'LIKE', "%$search%")
+                ->orderBy('fecha_creacion', 'DESC')
+                ->get();
+                
+            // Si no hay resultados directos por título, intentamos buscar por género
+            if (empty($instrumentales)) {
+                $generoId = DB::selectAssoc("SELECT id FROM genero_musical WHERE nombre LIKE ?", ["%$search%"]);
+                if (!empty($generoId)) {
+                    $ids = DB::selectAssoc("SELECT id_instrumental FROM pertenecer WHERE id_genero = ?", [$generoId[0]['id']]);
+                    $instrumentalIds = array_column($ids, 'id_instrumental');
+                    
+                    if (!empty($instrumentalIds)) {
+                        $placeholders = implode(',', array_fill(0, count($instrumentalIds), '?'));
+                        $instrumentales = DB::select(
+                            Instrumental::class,
+                            "SELECT * FROM instrumentales WHERE id IN ($placeholders) ORDER BY fecha_creacion DESC",
+                            $instrumentalIds
+                        );
+                    }
+                }
+            }
+            
+            // Si aún no hay resultados, intentamos buscar por productor
+            if (empty($instrumentales)) {
+                $productorId = DB::selectAssoc("SELECT id FROM productores WHERE nombre LIKE ?", ["%$search%"]);
+                if (!empty($productorId)) {
+                    $instrumentales = Instrumental::where('id_productor', $productorId[0]['id'])
+                        ->orderBy('fecha_creacion', 'DESC')
+                        ->get();
+                }
+            }
+        } else {
+            $instrumentales = Instrumental::orderBy('fecha_creacion', 'DESC')->get();
+        }
+        
         view('instrumentales.instrumentales_index', ['instrumentales' => $instrumentales]);
     }
 

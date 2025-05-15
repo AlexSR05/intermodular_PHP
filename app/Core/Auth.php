@@ -14,13 +14,16 @@ class Auth {
         $u = Usuario::where('email', $email)->first();
     
         if ($u && password_verify($password, $u->password)) {
+            // Set session data
             session()->set('user', [
                 'id' => $u->id,
                 'nombre' => $u->nombre,
                 'email' => $u->email,
                 'role' => $u->role,
             ]);
-            return true;
+            
+            // Verify session was set correctly
+            return session()->has('user');
         }
         return false;
     }

@@ -17,9 +17,9 @@ class Usuario extends Model
     public function insert(): void
     {
         $sql = "INSERT INTO " . self::$table
-            . " (nombre, email, password)"
-            . " VALUES (?, ?, ?)";
-        $params = [$this->nombre, $this->email, password_hash($this->password, PASSWORD_DEFAULT), $this->role];
+            . " (nombre, email, password, role)"
+            . " VALUES (?, ?, ?, ?)";
+        $params = [$this->nombre, $this->email, $this->password, $this->role];
         $this->id = DB::insert($sql, $params);
     }
 

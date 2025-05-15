@@ -25,6 +25,7 @@ require_once __DIR__ . '/../app/Models/Instrumental.php';
 require_once __DIR__ . '/../app/Models/Productor.php';
 require_once __DIR__ . '/../app/Models/Genero.php';
 require_once __DIR__ . '/../app/Models/Contact.php';
+require_once __DIR__ . '/../app/Models/Valoracion.php';
 
 // Inicio de sesión (siempre después de cargar el modelo Usuario)
 session();

@@ -8,7 +8,6 @@ use App\Models\Usuario;
 
 class AuthController {
 
-
     public function showLoginForm(): void
     {
         view('auth.login');
@@ -27,15 +26,29 @@ class AuthController {
         ];
     
         if (Auth::attempt($credentials)) {
-            redirect('/instrumentales/index.php')->with('success','Bienvenido!')->send();
+            // Debug information to verify session is set
+            if (defined('DEBUG') && DEBUG) {
+                echo "<pre>Session after login: ";
+                print_r(session()->get('user'));
+                echo "</pre>";
+                exit;
+            }
+            
+            // Direct header redirection instead of using the redirect helper
+            header('Location: ' . BASE_URL . '/instrumentales/index.php');
+            exit;
         }
 
-        back()->with('message', 'Credenciales incorrectas')->send();
+        // If credentials are incorrect
+        session()->flash('error', 'Credenciales incorrectas');
+        header('Location: ' . BASE_URL . '/auth/login/index.php');
+        exit;
     }
 
     public function logout(){
         Auth::logout();
-        redirect('/auth/login/index.php')->send();
+        header('Location: ' . BASE_URL . '/auth/login/index.php');
+        exit;
     }
 
     public function register(Request $request): void
@@ -47,9 +60,12 @@ class AuthController {
         $role = 'user';
 
         // Comprobar que el email no exista
-        /*if (Usuario::findByEmail($email)) {
-            back()->with('error', 'El email ya está registrado')->withInput(['email' => $email])->send();
-        }*/
+        if (Usuario::where('email', $email)->first()) {
+            session()->flash('error', 'El email ya está registrado');
+            session()->flash('old', ['nombre' => $nombre, 'email' => $email]);
+            header('Location: ' . BASE_URL . '/auth/register/index.php');
+            exit;
+        }
 
         // Crear el nuevo usuario
         $usuario = new Usuario();
@@ -57,8 +73,16 @@ class AuthController {
         $usuario->email = $email;
         $usuario->password = password_hash($password, PASSWORD_DEFAULT);
         $usuario->role = $role;
-        $usuario->save(); // Asumimos que `insert()` guarda en la base de datos y actualiza $usuario->id
+        $usuario->save();
 
-        redirect('/instrumentales/index.php')->with('success','Registro realizado con éxito.');
+        // Iniciar sesión automáticamente
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            header('Location: ' . BASE_URL . '/instrumentales/index.php');
+        } else {
+            // If auto-login fails, redirect to login page
+            session()->flash('success', 'Registro exitoso. Por favor inicia sesión.');
+            header('Location: ' . BASE_URL . '/auth/login/index.php');
+        }
+        exit;
     }
 }

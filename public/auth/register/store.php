@@ -7,9 +7,13 @@ use App\Core\Request;
 use App\Core\ErrorHandler;
 use App\Http\Controllers\AuthController;
 
+ob_start();
+
 $request = new Request();
 try{
     (new AuthController())->register($request);
 } catch (Exception $e) {
     ErrorHandler::handle($e);
 }
+
+ob_end_flush();
