@@ -28,14 +28,14 @@
             </div>
 
             <div class="form-group">
-                <label for="password">Nueva contraseña (dejar en blanco para mantener la actual)</label>
+                <label for="password">Nueva contraseña <i>(dejar en blanco para mantener la actual)</i></label>
                 <input type="password" id="password" name="password" class="form-control">
-                <small>Mínimo 6 caracteres.</small>
+                <small style="color: red;">Mínimo 6 caracteres.</small>
             </div>
 
             <div class="action-buttons">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                <a href="<?php echo BASE_URL . '/usuarios/profile.php'; ?>" class="btn btn-secondary">Cancelar</a>
+                <a href="<?php echo BASE_URL . '/usuarios/profile.php'; ?>" class="btn btn-danger">Cancelar</a>
             </div>
         </form>
     </div>

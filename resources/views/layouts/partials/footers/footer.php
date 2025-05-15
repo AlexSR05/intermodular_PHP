@@ -3,7 +3,7 @@
   <p>&copy; 2025 LoopLab. Todos los derechos reservados.</p>
   <br><br>
   <div class="div-footer">
-    <a href="https://www.instagram.com/" target="_blank">
+    <a href="https://www.instagram.com/prodjxice" target="_blank">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

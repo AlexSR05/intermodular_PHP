@@ -24,9 +24,7 @@ $result = $usuarioController->update($data);
 if ($result) {
     Auth::check(['nombre' => $data['nombre']]);
     session()->flash('success', 'Perfil actualizado correctamente');
+    redirect('/usuarios/profile.php');
 } else {
     session()->flash('error', 'No se pudo actualizar el perfil');
 }
-
-// Redirigir al perfil
-redirect('/usuarios/profile.php');

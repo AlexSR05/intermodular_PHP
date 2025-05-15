@@ -9,9 +9,9 @@ use App\Core\QueryBuilder;
 class Usuario extends Model
 {
     protected static string $table = 'usuarios';
-    protected static array $fillable = ['nombre', 'email', 'password', 'role'];
-    protected static array $relations = ['votos', 'peliculas'];
-    protected static array $pivots = [/*'pivot', */'puntuacion', 'critica'];
+    protected static array $fillable = ['nombre', 'email', 'password', 'role','fecha_creacion'];
+    protected static array $relations = ['valoraciones'];
+    protected static array $pivots = [];
 
     /** @override */
     public function insert(): void

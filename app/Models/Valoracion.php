@@ -9,7 +9,7 @@ use App\Core\DB;
 class Valoracion extends Model
 {
     protected static string $table = 'valoraciones';
-    protected static array $fillable = ['comentario', 'num_valoracion', 'id_usuario'];
+    protected static array $fillable = ['comentario', 'fecha_valoracion','num_valoracion', 'id_usuario'];
 
     public function usuario()
     {
@@ -22,7 +22,6 @@ class Valoracion extends Model
     
     public function insert(): void
     {
-        // Verificar si la columna id_usuario existe en la tabla
         $checkColumn = DB::selectAssoc("
             SELECT COUNT(*) AS column_exists 
             FROM information_schema.COLUMNS 
@@ -34,7 +33,6 @@ class Valoracion extends Model
         $columnExists = $checkColumn[0]['column_exists'] > 0;
         
         if ($columnExists) {
-            // Si la columna existe, usamos la consulta con id_usuario
             $sql = "INSERT INTO " . static::$table . " (comentario, num_valoracion, id_usuario, fecha_valoracion) 
                     VALUES (?, ?, ?, NOW())";
             $params = [
@@ -43,7 +41,6 @@ class Valoracion extends Model
                 $this->id_usuario
             ];
         } else {
-            // Si la columna no existe, usamos la consulta sin id_usuario
             $sql = "INSERT INTO " . static::$table . " (comentario, num_valoracion, fecha_valoracion) 
                     VALUES (?, ?, NOW())";
             $params = [

@@ -6,6 +6,7 @@ namespace App\Controllers;
 use App\Models\Instrumental;
 use App\Models\Productor;
 use App\Models\Genero;
+use App\Models\Valoracion;
 use App\Core\DB;
 use App\Core\Router;
 
@@ -14,9 +15,17 @@ class InstrumentalController
     public function index(): void
     {
         $instrumentales = Instrumental::orderBy('fecha_creacion', 'DESC')->limit(4)->get();
-        //echo "<pre>";
-        //print_r($instrumentales); echo "</pre>";
-        view('instrumentales.index', ['instrumentales' => $instrumentales]);
+        
+        // Obtener todas las valoraciones directamente del modelo
+        $valoraciones = Valoracion::orderBy('fecha_valoracion', 'DESC')->get();
+        
+        // Añadir depuración para verificar las valoraciones
+        // echo '<pre>Valoraciones: ' . print_r($valoraciones, true) . '</pre>';
+        
+        view('instrumentales.index', [
+            'instrumentales' => $instrumentales,
+            'valoraciones' => $valoraciones
+        ]);
     }
 
     public function showAll(): void

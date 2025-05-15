@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="action-buttons">
-            <a href="<?php echo BASE_URL . '/usuarios/edit.php'; ?>" class="btn btn-primary">Editar Perfil</a>
+            <a href="<?php echo BASE_URL . '/usuarios/edit.php'; ?>" class="btn btn-edit">Editar Perfil</a>
             <a href="<?php echo BASE_URL . '/auth/logout.php'; ?>" class="btn btn-danger">Cerrar Sesión</a>
         </div>
     </div>
@@ -56,7 +56,7 @@
                                 ⭐
                             <?php endfor; ?>
                         </div>
-                        <p class="valoracion-comentario"><?php echo htmlspecialchars($valoracion->comentario); ?></p>
+                        <p class="valoracion-comentario"><i><?php echo htmlspecialchars($valoracion->comentario); ?></i></p>
                     </div>
                 <?php endforeach; ?>
             </div>
