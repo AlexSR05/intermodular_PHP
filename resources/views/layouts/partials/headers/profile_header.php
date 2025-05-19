@@ -33,7 +33,7 @@
 
         if (dropdownToggle && dropdownContent) {
             // Mostrar/ocultar menú al hacer clic
-            dropdownToggle.addEventListener('click', function(e) {
+            dropdownToggle.addner('click', function(e) {
                 e.preventDefault();
                 dropdownContent.classList.toggle('show');
             });

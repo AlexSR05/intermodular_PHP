@@ -1,120 +1,141 @@
+/* Variables de colores personalizables */
+:root {
+  /* Colores principales - Modifica estos valores para cambiar el esquema de colores */
+  --background-color: #1e1e2f; /* Color de fondo principal */
+  --card-background: #2b2b40; /* Color de fondo de las tarjetas/divs */
+  --text-color: #000000; /* Color de texto principal */
+  --primary-color: #5757a9; /* Color primario (botones, enlaces) */
+  --primary-hover: #3e3e71; /* Color primario al pasar el cursor */
+  --secondary-color: #a7a7e1; /* Color secundario (enlaces secundarios) */
+  --secondary-hover: #8a8ad6; /* Color secundario al pasar el cursor */
+  --input-background: rgba(255, 255, 255, 0.9); /* Fondo de los campos de entrada */
+  --border-color: rgba(255, 255, 255, 0.2); /* Color de los bordes */
+
+  /* Colores de alertas */
+  --success-bg: rgba(0, 255, 0, 0.2); /* Fondo de alertas de éxito */
+  --success-border: #55ff55; /* Borde de alertas de éxito */
+  --success-text: #99ff99; /* Texto de alertas de éxito */
+  --error-bg: rgba(255, 0, 0, 0.2); /* Fondo de alertas de error */
+  --error-border: #ff5555; /* Borde de alertas de error */
+  --error-text: #ff9999; /* Texto de alertas de error */
+
+  /* Colores de marca */
+  --brand-color: rgb(255, 230, 0); /* Color del logo/marca */
+}
+
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #1e1e2f;
-  color: #f4f4f9;
+  background-color: var(--background-color)!important;
+  min-height: 100vh;
+}
+
+.bg-light {
+  background-color: var(--background-color) !important;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
 }
-.section {
-  background: #2b2b40;
-  padding: 1rem 4rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  margin-right: 160px;
+
+.bg-white {
+  background-color: var(--card-background) !important;
+  color: var(--text-color);
 }
-h2 {
-  color: #ffffff;
-  font-size: 20px;
+
+.form-control {
+  background-color: var(--input-background);
+  border: 1px solid #ced4da;
 }
-label {
-  display: block;
-  text-align: left;
-  margin-top: 10px;
-  margin-left: 10px;
+
+.form-control:focus {
+  background-color: #fff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(87, 87, 169, 0.25);
 }
-input {
-  width: 90%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: none;
-  font-size: 1rem;
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
-button {
-  background-color: #5757a9;
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 15px;
-  width: 100%;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-button:hover {
-  background-color: #3e3e71;
-}
-.option-register {
-  font-size: 12px;
-}
-#login {
-  color: #a7a7e1;
-}
-h3 {
-  font-size: 30px;
-  color: rgb(255, 230, 0);
-  font-family: "Rubik Spray Paint", serif;
-  font-weight: 200;
-}
-.forgot-your-password {
-  opacity: 0.8;
-  font-size: 10px;
-  color: #a7a7e1;
-}
-.forgot-your-password-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.error {
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
-  text-align: left;
-}
-.social-login {
-  margin-top: 20px;
-  margin-bottom: 80px;
-}
-.social-login button {
-  background-color: #ffffff;
-  color: #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  margin-top: 10px;
-  font-weight: bold;
-}
-.social-login img {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
 }
 
-.alert {
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  font-size: 14px;
+.link-primary {
+  color: var(--primary-color);
 }
 
-.alert-error {
-  background-color: rgba(255, 0, 0, 0.2);
-  border: 1px solid #ff5555;
-  color: #ff9999;
+.link-primary:hover {
+  color: var(--primary-hover);
+}
+
+.link-secondary {
+  color: var(--secondary-color);
+}
+
+.link-secondary:hover {
+  color: var(--secondary-hover);
+}
+
+.alert-danger {
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
 }
 
 .alert-success {
-  background-color: rgba(0, 255, 0, 0.2);
-  border: 1px solid #55ff55;
-  color: #99ff99;
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success-text);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.border-secondary-subtle {
+  border-color: var(--border-color) !important;
+}
+
+.text-secondary {
+  color: var(--secondary-color) !important;
+}
+
+.custom-bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.custom-bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+.custom-text-primary {
+  color: var(--primary-color) !important;
+}
+
+.custom-text-secondary {
+  color: var(--secondary-color) !important;
+}
+
+@media (max-width: 767.98px) {
+  .bg-light {
+    padding: 2rem 0;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }

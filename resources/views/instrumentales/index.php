@@ -112,7 +112,7 @@
         </svg>
         Valoraciones
       </h2>
-      <p><b>Para valorar nuestra página, necesitas <a href="<?php echo BASE_URL . '/auth/login/index.php' ?>">iniciar sesión</a>.</b></p>
+      <p><b>Para valorar nuestra página, necesitas <a href="<?php echo BASE_URL . '/auth/login/index.php' ?>" id="log-in">iniciar sesión</a>.</b></p>
     </section>
   <?php endif; ?>
 

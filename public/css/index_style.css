@@ -440,6 +440,12 @@ video {
   color: #dc3545;
 }
 
+#log-in{
+  color: yellow;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
   .valoraciones-grid {
     grid-template-columns: 1fr;
