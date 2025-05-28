@@ -16,4 +16,4 @@ view('usuarios/edit', [
     'usuario' => $usuario,
     'header' => 'index',
     'title' => 'Editar Perfil - LoopLab'
-]);
+]); 

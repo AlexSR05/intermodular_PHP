@@ -6,10 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Cart;
 use App\Core\Request;
-use App\Models\Articulo;
-use App\Models\Generico;
-use App\Models\BalonColor;
-use App\Models\ZapatillaTallaColor;
+use App\Models\Instrumental;
 
 class CartController
 {
@@ -35,46 +32,40 @@ class CartController
     // Añadir un artículo al carrito
     public function add(Request $request): void
     {
-        $articuloId = $request->articulo_id;
+        $articuloId = (int)$request->articulo_id;
+        $returnUrl = $request->return_url ?? '/carrito/index.php';
 
-        $articulo = Articulo::find($articuloId);
-        if (!$articulo) {
-            back()->with('error', 'Artículo no encontrado')->send();
+        $instrumental = Instrumental::find($articuloId);
+        if (!$instrumental) {
+            back()->with('error', 'Instrumental no encontrado')->send();
         }
 
-        $tipo = $articulo->tipo;
-
-        match ($tipo) {
-            'balon' => $variante = BalonColor::where('balon_id', $articuloId)
-                ->where('color_id', $request->color_id)
-                ->first(),
-
-            'zapatilla' => $variante = ZapatillaTallaColor::where('zapatilla_id', $articuloId)
-                ->where('color_id', $request->color_id)
-                ->where('talla_id', $request->talla_id)
-                ->first(),
-
-            'generico' => $variante = Generico::find($articuloId),
-
-            default => throw new \Exception("Tipo de artículo no reconocido: $tipo")
-        };
+        // Para instrumentales, usamos el tipo "instrumental"
+        $tipo = 'instrumental';
+        
+        // Para instrumentales, la variante es el mismo instrumental
+        $variante = $instrumental;
 
         if (!$variante) {
             back()->with('error', 'Variante no disponible')->send();
         }
-
-        if ($variante->stock <= 0) {
-            back()->with('error', 'Este artículo está agotado')->send();
+        
+        // Verificar si el instrumental ya está en el carrito
+        if ($this->cart->has($articuloId, $tipo, $variante->id)) {
+            back()->with('warning', 'Este instrumental ya está en tu carrito')->send();
+            return;
         }
         
-        $cantidad = min($request->cantidad, $variante->stock);
-        $this->cart->add($articuloId, $tipo, $variante->id, $cantidad, $variante->precio);
-
-        if ($cantidad < $request->cantidad) {
-            redirect('/carrito/index.php')->with('warning', "Solo se añadieron $cantidad unidades por falta de stock")->send();
-        }
-        print_r($this->cart->getItems()); exit;
-        redirect('/carrito/index.php')->with('success', 'Artículo añadido al carrito')->send();
+        // En este caso, la cantidad siempre es 1 ya que cada instrumental es único
+        $cantidad = 1;
+        
+        // Asegurarse de que el precio se pasa como float
+        $precio = $variante->precio;
+        
+        $this->cart->add($articuloId, $tipo, $variante->id, $cantidad, $precio);
+        
+        // Redirigir de vuelta a la página anterior en lugar de ir al carrito
+        back()->with('success', 'Instrumental añadido al carrito')->send();
     }
 
     // Actualizar la cantidad de un artículo
@@ -93,9 +84,14 @@ class CartController
             back()->with('error', 'Artículo no encontrado en la cesta.')->send();
         }
 
+        // Para instrumentales, la cantidad siempre es 1 ya que son productos únicos
+        if ($articulo_tipo === 'instrumental') {
+            $cantidad = 1;
+        }
+
         $this->cart->update($articulo_id, $articulo_tipo, $variante_id, $cantidad);
 
-        back()->with('success', "Cantidad actualizada a $cantidad.")->send();
+        back()->with('success', "Cantidad actualizada.")->send();
     }
 
     // Eliminar un artículo del carrito

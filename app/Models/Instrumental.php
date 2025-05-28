@@ -37,14 +37,15 @@ class Instrumental extends Model
     public function update(): void
     {
         $sql = "UPDATE " . self::$table . "
-                SET titulo = ?, id_productor = ?, precio = ?, fecha_creacion = ?, descripcion = ?
+                SET titulo = ?, id_productor = ?, precio = ?, bpm = ?, imagen = ?, audio = ?
                 WHERE id = ?";
         $params = [
             $this->titulo,
             $this->id_productor,
             $this->precio,
-            $this->fecha_lanzamiento,
-            $this->descripcion,
+            $this->bpm,
+            $this->imagen,
+            $this->audio,
             $this->id
         ];
         DB::update($sql, $params);
@@ -52,11 +53,8 @@ class Instrumental extends Model
 
     public function destroy(): void
     {
-        $sql = "DELETE FROM" . self::$table . "
-                WHERE id = ?";
-        $params = [
-            $this->id
-        ];
+        $sql = "DELETE FROM " . self::$table . " WHERE id = ?";
+        $params = [$this->id];
         DB::update($sql, $params);
     }
 
@@ -71,7 +69,7 @@ class Instrumental extends Model
         return DB::selectOne(Productor::class, $sql, $params);
     }
 
-    public function genero(): Genero
+    public function genero(): ?Genero
     {
 
         $sql = "SELECT gm.*

@@ -25,7 +25,7 @@
                         </div>
                         <h2 class="admin-stat-value"><?= $totalInstrumentales ?></h2>
                         <p class="admin-stat-label">Total de instrumentales</p>
-                        <a href="<?= BASE_URL ?>/instrumentales/index.php" class="btn btn-sm btn-primary mt-3">Gestionar</a>
+                        <a href="<?= BASE_URL ?>/admin/instrumentales.php" class="btn btn-sm btn-primary mt-3">Gestionar</a>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                         </div>
                         <h2 class="admin-stat-value"><?= $totalValoraciones ?></h2>
                         <p class="admin-stat-label">Valoraciones recibidas</p>
-                        <a href="<?= BASE_URL ?>/valoraciones/index.php" class="btn btn-sm btn-primary mt-3">Gestionar</a>
+                        <a href="<?= BASE_URL ?>/instrumentales/index.php#valoraciones" class="btn btn-sm btn-primary mt-3">Gestionar</a>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                         </div>
                         <h2 class="admin-stat-value"><?= $totalProductores ?></h2>
                         <p class="admin-stat-label">Productores registrados</p>
-                        <a href="<?= BASE_URL ?>/productores/index.php" class="btn btn-sm btn-primary mt-3">Gestionar</a>
+                        <br><br>
                     </div>
                 </div>
             </div>
@@ -93,8 +93,8 @@
                     <div class="card-body">
                         <h5 class="card-title">Acciones rápidas</h5>
                         <div class="row g-3 mt-3">
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <a href="<?= BASE_URL ?>/instrumentales/add.php" class="btn btn-primary w-100">
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <a href="<?= BASE_URL ?>/admin/instrumentales/create.php" class="btn btn-primary w-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
                                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -102,7 +102,8 @@
                                     Nuevo Instrumental
                                 </a>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <br><br>
+                            <div class="col-12 col-md-6 col-lg-6">
                                 <a href="<?= BASE_URL ?>/auth/register/index.php" class="btn btn-primary w-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus me-2" viewBox="0 0 16 16">
                                         <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
@@ -111,24 +112,7 @@
                                     Nuevo Usuario
                                 </a>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <a href="<?= BASE_URL ?>/productores/add.php" class="btn btn-primary w-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-badge me-2" viewBox="0 0 16 16">
-                                        <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                        <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492z"/>
-                                    </svg>
-                                    Nuevo Productor
-                                </a>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <a href="<?= BASE_URL ?>/generos/add.php" class="btn btn-primary w-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tag me-2" viewBox="0 0 16 16">
-                                        <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
-                                        <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
-                                    </svg>
-                                    Nuevo Género
-                                </a>
-                            </div>
+                            <br><br>
                         </div>
                     </div>
                 </div>
@@ -142,7 +126,7 @@
                 <div class="card admin-card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Instrumentales recientes</h5>
-                        <a href="<?= BASE_URL ?>/instrumentales/instrumentales_index.php" class="btn btn-sm btn-outline-primary">Ver todos</a>
+                        <a href="<?= BASE_URL ?>/admin/instrumentales.php" class="btn btn-sm btn-outline-primary">Ver todos</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -153,13 +137,12 @@
                                         <th>Título</th>
                                         <th>Productor</th>
                                         <th>Precio</th>
-                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($instrumentalesRecientes)): ?>
                                         <tr>
-                                            <td colspan="5" class="text-center py-4">No hay instrumentales disponibles</td>
+                                            <td colspan="5" class="text-center py-3">No hay instrumentales disponibles</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($instrumentalesRecientes as $instrumental): ?>
@@ -175,15 +158,6 @@
                                                     ?>
                                                 </td>
                                                 <td><?= number_format($instrumental->precio, 2) ?> €</td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <a href="<?= BASE_URL ?>/instrumentales/edit.php?id=<?= $instrumental->id ?>" class="btn btn-sm btn-outline-primary">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                                                            </svg>
-                                                        </a>
-                                                    </div>
-                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -231,7 +205,7 @@
                                                 <td><?= $usuario->fecha_creacion ? date('d/m/Y', strtotime($usuario->fecha_creacion)) : 'N/A' ?></td>
                                                 <td>
                                                     <div class="btn-group" role="group">
-                                                        <a href="<?= BASE_URL ?>/usuarios/edit.php?id=<?= $usuario->id ?>" class="btn btn-sm btn-outline-primary">
+                                                        <a href="<?= BASE_URL ?>/admin/usuarios/edit.php?id=<?= $usuario->id ?>" class="btn btn-sm btn-outline-primary">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                                                             </svg>
@@ -264,13 +238,12 @@
                                         <th>Comentario</th>
                                         <th>Puntuación</th>
                                         <th>Fecha</th>
-                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($valoracionesRecientes)): ?>
                                         <tr>
-                                            <td colspan="5" class="text-center py-4">No hay valoraciones disponibles</td>
+                                            <td colspan="5" class="text-center py-3">No hay valoraciones disponibles</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($valoracionesRecientes as $valoracion): ?>
@@ -295,16 +268,6 @@
                                                     </div>
                                                 </td>
                                                 <td><?= $valoracion->fecha_valoracion ? date('d/m/Y', strtotime($valoracion->fecha_valoracion)) : 'N/A' ?></td>
-                                                <td>
-                                                <form action="<?php echo BASE_URL . '/valoraciones/delete.php'; ?>" method="POST">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $valoracion->id ?>">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                                        </svg>
-                                                    </button>
-                                                </form>
-                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -320,7 +283,6 @@
                 <div class="card admin-card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Productores</h5>
-                        <a href="<?= BASE_URL ?>/productores/index.php" class="btn btn-sm btn-outline-primary">Ver todos</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -330,13 +292,12 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Instrumentales</th>
-                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($productores)): ?>
                                         <tr>
-                                            <td colspan="4" class="text-center py-4">No hay productores disponibles</td>
+                                            <td colspan="4" class="text-center py-3">No hay productores disponibles</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($productores as $productor): ?>
@@ -345,18 +306,8 @@
                                                 <td><?= htmlspecialchars($productor->nombre) ?></td>
                                                 <td>
                                                     <?php 
-                                                        // Aquí iría el conteo de instrumentales por productor
                                                         echo isset($productorInstrumentales[$productor->id]) ? $productorInstrumentales[$productor->id] : 0;
                                                     ?>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <a href="<?= BASE_URL ?>/productores/edit.php?id=<?= $productor->id ?>" class="btn btn-sm btn-outline-primary">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                                                            </svg>
-                                                        </a>
-                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -471,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: '#f4f4f9'
+                        color: 'black'
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)'
@@ -479,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 x: {
                     ticks: {
-                        color: '#f4f4f9'
+                        color: 'black'
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)'
@@ -489,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     labels: {
-                        color: '#f4f4f9'
+                        color: 'black'
                     }
                 }
             }
@@ -507,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 legend: {
                     position: 'right',
                     labels: {
-                        color: '#f4f4f9'
+                        color: 'black'
                     }
                 }
             }

@@ -22,6 +22,6 @@ class ContactController
 
     public function index(): void
     {
-        view('contact.contact_index');
+        view('contact.contact_index', ['title' => 'LoopLab - Contacto']);
     }
 }

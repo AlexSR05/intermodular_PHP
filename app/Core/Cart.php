@@ -39,21 +39,37 @@ class Cart
     }
 
     // Añadir artículo al carrito
-    public function add(int $articulo_id, string $articulo_tipo, int $variante_id, int $cantidad, float $precio): void
+    public function add(int $articulo_id, string $articulo_tipo, int $variante_id, int $cantidad, $precio): void
     {
+        // Convertir el precio a float para asegurar compatibilidad
+        $precio = (float) $precio;
+        
         $key = $this->makeKey($articulo_id, $articulo_tipo, $variante_id);
 
         $cart = $this->session->get('cart');
-        if (isset($cart[$key])) {
-            $cart[$key]['cantidad'] += $cantidad;
-        } else {
+        
+        // Para instrumentales, siempre es cantidad 1 y no se acumula
+        if ($articulo_tipo === 'instrumental') {
             $cart[$key] = [
                 'articulo_id'   => $articulo_id,
                 'articulo_tipo' => $articulo_tipo,
                 'variante_id'   => $variante_id,
-                'cantidad'      => $cantidad,
+                'cantidad'      => 1,
                 'precio'        => $precio
             ];
+        } else {
+            // Para otros tipos de productos (si se añaden en el futuro)
+            if (isset($cart[$key])) {
+                $cart[$key]['cantidad'] += $cantidad;
+            } else {
+                $cart[$key] = [
+                    'articulo_id'   => $articulo_id,
+                    'articulo_tipo' => $articulo_tipo,
+                    'variante_id'   => $variante_id,
+                    'cantidad'      => $cantidad,
+                    'precio'        => $precio
+                ];
+            }
         }
 
         $this->session->set('cart', $cart);
@@ -64,7 +80,13 @@ class Cart
         $key = $this->makeKey($articulo_id, $articulo_tipo, $variante_id);
     
         $cart = $this->session->get('cart');
-        $cart[$key]['cantidad'] = $cantidad;
+        
+        // Para instrumentales, siempre es cantidad 1
+        if ($articulo_tipo === 'instrumental') {
+            $cart[$key]['cantidad'] = 1;
+        } else {
+            $cart[$key]['cantidad'] = $cantidad;
+        }
     
         $this->session->set('cart', $cart);
     }
@@ -82,7 +104,7 @@ class Cart
 
         foreach ($items as $key => $details) {
             $modelClass = $this->getStockable($details['articulo_tipo']);
-            /** @var \App\Contracts\Stockeable|null $variante */
+            /** @var \App\Models\Instrumental|null $variante */
             $variante = $modelClass::find($details['variante_id']);
 
             if (!$variante) {
@@ -93,18 +115,16 @@ class Cart
 
             $updatedItem = $details; // Copia del item original para posibles ajustes
 
-            if ($variante->stock < $details['cantidad']) {
-                $updatedItem['cantidad'] = max(0, $variante->stock);
-                if ($updatedItem['cantidad'] == 0) {
-                    $messages[$key][] = "Artículo no disponible actualmente";
-                } else {
-                    $messages[$key][] = "Solo quedan {$variante->stock} unidades. Se ha ajustado la cantidad a las existencias actuales";
-                }
-            }
+            // Para instrumentales, no verificamos stock ya que son productos únicos
+            // y se eliminan después de la compra
 
-            if ($variante->precio != $details['precio']) {
-                $diff = $variante->precio - $details['precio'];
-                $updatedItem['precio'] = $variante->precio;
+            // Convertir ambos precios a float para comparación
+            $variantePrecio = (float) $variante->precio;
+            $detailsPrecio = (float) $details['precio'];
+            
+            if ($variantePrecio != $detailsPrecio) {
+                $diff = $variantePrecio - $detailsPrecio;
+                $updatedItem['precio'] = $variantePrecio;
                 if ($diff > 0) {
                     $messages[$key][] = "El precio ha subido $diff euros";
                 } else {
@@ -115,7 +135,7 @@ class Cart
             $updatedCart[$key] = $updatedItem;
             $models[$key] = $variante;
             $cantidadTotal += $updatedItem['cantidad'];
-            $importeTotal += $updatedItem['cantidad'] * $updatedItem['precio'];
+            $importeTotal += $updatedItem['cantidad'] * (float)$updatedItem['precio'];
         }
 
         // Solo actualizar la sesión si hubo cambios reales
@@ -160,8 +180,8 @@ class Cart
     public function importe_total(): float
     {
         $importe = 0;
-        foreach ($this->all() as $item) {
-            $importe += $item['cantidad'] * $item['precio'];
+        foreach ($this->all()['items'] as $item) {
+            $importe += $item['cantidad'] * (float)$item['precio'];
         }
         return $importe;
     }
@@ -185,9 +205,7 @@ class Cart
     public function getStockable(string $articulo_tipo): string
     {
         return match ($articulo_tipo) {
-            'balon'     => \App\Models\BalonColor::class,
-            'generico'  => \App\Models\Generico::class,
-            'zapatilla' => \App\Models\ZapatillaTallaColor::class,
+            'instrumental' => \App\Models\Instrumental::class,
             default     => throw new \Exception("Tipo de variante no reconocido: $articulo_tipo")
         };
     }

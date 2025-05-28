@@ -23,13 +23,8 @@ $usuarioController = new UsuarioController();
 $result = $usuarioController->update($data);
 
 if ($result) {
-    redirect('../resources/views/usuarios/profile.php');
-    // Actualizar la sesión con el nuevo nombre
-    // Update session with new name
     $_SESSION['nombre'] = $data['nombre'];
-    // Set flash message for success
-    $_SESSION['success'] = 'Perfil actualizado correctamente';
+    header('Location:edit.php');
 } else {
-    // Set flash message for error
-    $_SESSION['flash_error'] = 'No se pudo actualizar el perfil';
+    header('Location:edit.php');
 }

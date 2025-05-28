@@ -19,7 +19,7 @@ class ValoracionController
     {
         if (!Auth::check()) {
             session()->flash('error', 'Debes iniciar sesión para enviar una valoración.');
-            header('Location: ' . BASE_URL);
+            header('Location:../instrumentales/index.php#valoraciones');
             exit;
         }
         
@@ -45,7 +45,7 @@ class ValoracionController
             session()->flash('error', 'Ha ocurrido un error al guardar tu valoración. Por favor, inténtalo de nuevo.');
         }
         
-        header('Location: ' . BASE_URL);
+        header('Location:../instrumentales/index.php#valoraciones');
         exit;
     }
 }

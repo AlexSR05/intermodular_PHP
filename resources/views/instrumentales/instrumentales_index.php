@@ -18,6 +18,23 @@
         </div>
     </div>
     <br><br>
+    
+    <div id="notification-container" class="notification-container">
+        <?php if (session()->has('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= session()->get('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (session()->has('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= session()->get('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+    </div>
+    
     <div id="instrumentales">
     <?php if (count($instrumentales)): ?>
         <?php foreach($instrumentales as $instrumental) : ?>
@@ -42,36 +59,26 @@
             <div class="precio-carrito">
               <p><b>Precio:</b> <?= number_format($instrumental->precio, 2, '.', '');?> €</p>
             </div>
-            <a href="<?php echo BASE_URL . '/instrumentales/instrumentales_index.php'?>" class="button-48">Comprar</a>
+            <form action="<?= BASE_URL . '/carrito/add.php'; ?>" method="POST" class="add-to-cart-form">
+                <input type="hidden" name="articulo_id" value="<?= $instrumental->id ?>">
+                <input type="hidden" name="cantidad" value="1">
+                <input type="hidden" name="return_url" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                <button type="submit" class="button-48" 
+                    data-id="<?= $instrumental->id ?>" 
+                    data-title="<?= htmlspecialchars($instrumental->titulo) ?>" 
+                    data-price="<?= $instrumental->precio ?>" 
+                    data-bpm="<?= $instrumental->bpm ?>" 
+                    data-image="<?= htmlspecialchars($instrumental->imagen) ?>">
+                    Añadir al carrito
+                </button>
+            </form>
           </div>
         <?php endforeach; ?>
         <?php else: ?>
             <h3 style='font-size: 14px;'> No se han encontrado instrumentales relativas a tu búsqueda.</h3>
         <?php endif; ?>
     </div>
-
+    <br>
 </section>
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const botones = document.querySelectorAll(".button-48");
-
-        botones.forEach(boton => {
-            boton.addEventListener("click", () => {
-                let titulo = boton.dataset.title;
-                let precio = parseFloat(boton.dataset.price).toFixed(2);
-                let bpm = boton.dataset.bpm;
-                let imagen = boton.dataset.image;
-
-                let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-                carrito.push({ titulo, precio, bpm, imagen });
-
-                localStorage.setItem("carrito", JSON.stringify(carrito));
-
-                alert(`"${titulo}" ha sido añadida al carrito.`);
-            });
-        });
-    });
-    </script>
-    <br><br>
 </body>
 </html>

@@ -175,10 +175,38 @@ class AdminController
      */
     public function storeInstrumental(Request $request)
     {
+        // Obtener datos directamente de $_POST para asegurar que se reciben
+        $titulo = trim($_POST['titulo'] ?? '');
+        $precio = $_POST['precio'] ?? '';
+        $id_productor = $_POST['id_productor'] ?? '';
+        $bpm = $_POST['bpm'] ?? 0;
+        $genero = $_POST['genero'] ?? ''; // Cambiado de 'generos' a 'genero' (singular)
+        
+        // Debug: Verificar los datos obtenidos
+        if (defined('DEBUG') && DEBUG) {
+            error_log("AdminController::storeInstrumental - Título: '$titulo'");
+            error_log("AdminController::storeInstrumental - Precio: '$precio'");
+            error_log("AdminController::storeInstrumental - ID Productor: '$id_productor'");
+            error_log("AdminController::storeInstrumental - Género: '$genero'");
+            error_log("AdminController::storeInstrumental - Datos POST: " . print_r($_POST, true));
+        }
+        
         // Validar datos
-        if (empty($request->titulo) || empty($request->precio) || empty($request->id_productor)) {
-            session()->flash('error', 'Todos los campos son obligatorios');
-            header('Location: ' . BASE_URL . '/instrumentales/create.php');
+        if (empty($titulo)) {
+            session()->flash('error', 'El título es obligatorio');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/create.php');
+            exit;
+        }
+        
+        if (empty($precio) || !is_numeric($precio) || $precio <= 0) {
+            session()->flash('error', 'El precio debe ser un número mayor que 0');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/create.php');
+            exit;
+        }
+        
+        if (empty($id_productor) || !is_numeric($id_productor)) {
+            session()->flash('error', 'Debe seleccionar un productor válido');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/create.php');
             exit;
         }
         
@@ -208,23 +236,21 @@ class AdminController
         
         // Crear el instrumental
         $instrumental = new Instrumental();
-        $instrumental->titulo = $request->titulo;
-        $instrumental->bpm = $request->bpm ?? 0;
-        $instrumental->precio = $request->precio;
-        $instrumental->id_productor = $request->id_productor;
+        $instrumental->titulo = $titulo;
+        $instrumental->bpm = (int)$bpm;
+        $instrumental->precio = (float)$precio;
+        $instrumental->id_productor = (int)$id_productor;
         $instrumental->imagen = $imagen;
         $instrumental->audio = $audio;
         $instrumental->insert();
         
-        // Asociar géneros
-        if (!empty($request->generos)) {
-            foreach ($request->generos as $genero_id) {
-                DB::insert("INSERT INTO pertenecer (id_instrumental, id_genero) VALUES (?, ?)", [$instrumental->id, $genero_id]);
-            }
+        // Asociar género (solo uno)
+        if (!empty($genero) && is_numeric($genero)) {
+            DB::insert("INSERT INTO pertenecer (id_instrumental, id_genero) VALUES (?, ?)", [$instrumental->id, (int)$genero]);
         }
         
         session()->flash('success', 'Instrumental creado correctamente');
-        header('Location: ' . BASE_URL . '/instrumentales/index.php');
+        header('Location: ' . BASE_URL . '/admin/instrumentales.php');
         exit;
     }
     
@@ -233,26 +259,25 @@ class AdminController
      */
     public function editInstrumental($id)
     {
-        $instrumental = Instrumental::find($id);
+        $instrumental = Instrumental::find((int) $id);
         if (!$instrumental) {
             session()->flash('error', 'Instrumental no encontrado');
-            header('Location: ' . BASE_URL . '/instrumentales/index.php');
+            header('Location: ' . BASE_URL . '/admin/instrumentales.php');
             exit;
         }
         
         $productores = Productor::all();
         $generos = Genero::all();
         
-        // Obtener los géneros asociados al instrumental
-        $sql = "SELECT id_genero FROM pertenecer WHERE id_instrumental = ?";
+        // Obtener el género asociado al instrumental (solo uno)
+        $sql = "SELECT id_genero FROM pertenecer WHERE id_instrumental = ? LIMIT 1";
         $result = DB::selectAssoc($sql, [$id]);
-        $instrumentalGeneros = array_column($result, 'id_genero');
+        $instrumentalGenero = !empty($result) ? (int)$result[0]['id_genero'] : null;
         
         view('admin.instrumentales.edit', [
             'instrumental' => $instrumental,
             'productores' => $productores,
             'generos' => $generos,
-            'instrumentalGeneros' => $instrumentalGeneros,
             'title' => 'Editar Instrumental - LoopLab'
         ]);
     }
@@ -262,17 +287,46 @@ class AdminController
      */
     public function updateInstrumental($id, Request $request)
     {
-        $instrumental = Instrumental::find($id);
+        $instrumental = Instrumental::find((int) $id);
         if (!$instrumental) {
             session()->flash('error', 'Instrumental no encontrado');
-            header('Location: ' . BASE_URL . '/instrumentales/index.php');
+            header('Location: ' . BASE_URL . '/admin/instrumentales.php');
             exit;
         }
         
+        // Obtener datos directamente de $_POST para asegurar que se reciben
+        $titulo = trim($_POST['titulo'] ?? '');
+        $precio = $_POST['precio'] ?? '';
+        $id_productor = $_POST['id_productor'] ?? '';
+        $bpm = $_POST['bpm'] ?? 0;
+        $genero = $_POST['genero'] ?? '';
+        
+        // Debug: Verificar los datos obtenidos
+        if (defined('DEBUG') && DEBUG) {
+            error_log("AdminController::updateInstrumental - ID: $id");
+            error_log("AdminController::updateInstrumental - Título: '$titulo'");
+            error_log("AdminController::updateInstrumental - Precio: '$precio'");
+            error_log("AdminController::updateInstrumental - ID Productor: '$id_productor'");
+            error_log("AdminController::updateInstrumental - Género: '$genero'");
+            error_log("AdminController::updateInstrumental - Datos POST: " . print_r($_POST, true));
+        }
+        
         // Validar datos
-        if (empty($request->titulo) || empty($request->precio) || empty($request->id_productor)) {
-            session()->flash('error', 'Todos los campos son obligatorios');
-            header('Location: ' . BASE_URL . '/instrumentales/edit.php?id=' . $id);
+        if (empty($titulo)) {
+            session()->flash('error', 'El título es obligatorio');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/edit.php?id=' . $id);
+            exit;
+        }
+        
+        if (empty($precio) || !is_numeric($precio) || $precio <= 0) {
+            session()->flash('error', 'El precio debe ser un número mayor que 0');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/edit.php?id=' . $id);
+            exit;
+        }
+        
+        if (empty($id_productor) || !is_numeric($id_productor)) {
+            session()->flash('error', 'Debe seleccionar un productor válido');
+            header('Location: ' . BASE_URL . '/admin/instrumentales/edit.php?id=' . $id);
             exit;
         }
         
@@ -299,22 +353,20 @@ class AdminController
         }
         
         // Actualizar el instrumental
-        $instrumental->titulo = $request->titulo;
-        $instrumental->bpm = $request->bpm ?? 0;
-        $instrumental->precio = $request->precio;
-        $instrumental->id_productor = $request->id_productor;
+        $instrumental->titulo = $titulo;
+        $instrumental->bpm = (int)$bpm;
+        $instrumental->precio = (float)$precio;
+        $instrumental->id_productor = (int)$id_productor;
         $instrumental->update();
         
-        // Actualizar géneros
+        // Actualizar género (eliminar el anterior y agregar el nuevo)
         DB::delete("DELETE FROM pertenecer WHERE id_instrumental = ?", [$id]);
-        if (!empty($request->generos)) {
-            foreach ($request->generos as $genero_id) {
-                DB::insert("INSERT INTO pertenecer (id_instrumental, id_genero) VALUES (?, ?)", [$id, $genero_id]);
-            }
+        if (!empty($genero) && is_numeric($genero)) {
+            DB::insert("INSERT INTO pertenecer (id_instrumental, id_genero) VALUES (?, ?)", [$id, (int)$genero]);
         }
         
         session()->flash('success', 'Instrumental actualizado correctamente');
-        header('Location: ' . BASE_URL . '/instrumentales/index.php');
+        header('Location: ' . BASE_URL . '/admin/instrumentales.php');
         exit;
     }
     
@@ -323,22 +375,23 @@ class AdminController
      */
     public function deleteInstrumental($id)
     {
-        $instrumental = Instrumental::find($id);
+        $instrumental = Instrumental::find((int) $id);
         if (!$instrumental) {
             session()->flash('error', 'Instrumental no encontrado');
-            header('Location: ' . BASE_URL . '/instrumentales/index.php');
+            header('Location: ' . BASE_URL . '/admin/instrumentales.php');
             exit;
         }
         
         // Eliminar relaciones
         DB::delete("DELETE FROM pertenecer WHERE id_instrumental = ?", [$id]);
-        DB::delete("DELETE FROM valoraciones WHERE id_instrumental = ?", [$id]);
+        // Eliminar esta línea porque la tabla valoraciones no tiene id_instrumental
+        // DB::delete("DELETE FROM valoraciones WHERE id_instrumental = ?", [$id]);
         
         // Eliminar instrumental
         $instrumental->destroy();
         
         session()->flash('success', 'Instrumental eliminado correctamente');
-        header('Location: ' . BASE_URL . '/instrumentales/index.php');
+        header('Location: ' . BASE_URL . '/admin/instrumentales.php');
         exit;
     }
     
@@ -358,12 +411,18 @@ class AdminController
     /**
      * Formulario para editar un usuario
      */
-    public function editUsuario($id)
+    public function editUsuario(int $id)
     {
+        // Debug: Verificar el ID recibido
+        if (defined('DEBUG') && DEBUG) {
+            error_log("AdminController::editUsuario - ID recibido: " . $id);
+        }
+        
         $usuario = Usuario::find($id);
+        
         if (!$usuario) {
-            session()->flash('error', 'Usuario no encontrado');
-            header('Location: ' . BASE_URL . '/usuarios/index.php');
+            session()->flash('error', 'Usuario no encontrado con ID: ' . $id);
+            header('Location: ' . BASE_URL . '/admin/usuarios.php');
             exit;
         }
         
@@ -376,36 +435,76 @@ class AdminController
     /**
      * Actualiza un usuario
      */
-    public function updateUsuario($id, Request $request)
+    public function updateUsuario(int $id, Request $request)
     {
+        // Debug: Verificar el ID recibido
+        if (defined('DEBUG') && DEBUG) {
+            error_log("AdminController::updateUsuario - ID recibido: " . $id);
+            error_log("AdminController::updateUsuario - Datos POST: " . print_r($_POST, true));
+        }
+        
         $usuario = Usuario::find($id);
+        
         if (!$usuario) {
-            session()->flash('error', 'Usuario no encontrado');
-            header('Location: ' . BASE_URL . '/usuarios/index.php');
+            session()->flash('error', 'Usuario no encontrado con ID: ' . $id);
+            header('Location: ' . BASE_URL . '/admin/usuarios.php');
             exit;
         }
         
+        // Obtener datos directamente de $_POST para asegurar que se reciben
+        $nombre = trim($_POST['nombre'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $role = $_POST['role'] ?? 'user';
+        $password = $_POST['password'] ?? '';
+        
+        // Debug: Verificar los datos obtenidos
+        if (defined('DEBUG') && DEBUG) {
+            error_log("AdminController::updateUsuario - Nombre: '$nombre'");
+            error_log("AdminController::updateUsuario - Email: '$email'");
+            error_log("AdminController::updateUsuario - Role: '$role'");
+        }
+        
         // Validar datos
-        if (empty($request->nombre) || empty($request->correo)) {
-            session()->flash('error', 'El nombre y correo son obligatorios');
-            header('Location: ' . BASE_URL . '/usuarios/edit.php?id=' . $id);
+        if (empty($nombre)) {
+            session()->flash('error', 'El nombre es obligatorio');
+            header('Location: ' . BASE_URL . '/admin/usuarios/edit.php?id=' . $id);
+            exit;
+        }
+        
+        if (empty($email)) {
+            session()->flash('error', 'El email es obligatorio');
+            header('Location: ' . BASE_URL . '/admin/usuarios/edit.php?id=' . $id);
+            exit;
+        }
+        
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            session()->flash('error', 'El email no tiene un formato válido');
+            header('Location: ' . BASE_URL . '/admin/usuarios/edit.php?id=' . $id);
+            exit;
+        }
+        
+        // Verificar si el email ya existe (excepto para el usuario actual)
+        $existingUser = Usuario::where('email', $email)->first();
+        if ($existingUser && $existingUser->id !== $id) {
+            session()->flash('error', 'El email ya está en uso por otro usuario');
+            header('Location: ' . BASE_URL . '/admin/usuarios/edit.php?id=' . $id);
             exit;
         }
         
         // Actualizar el usuario
-        $usuario->nombre = $request->nombre;
-        $usuario->correo = $request->correo;
-        $usuario->role = $request->role;
+        $usuario->nombre = $nombre;
+        $usuario->email = $email;
+        $usuario->role = $role;
         
         // Actualizar contraseña solo si se proporciona una nueva
-        if (!empty($request->password)) {
-            $usuario->password = password_hash($request->password, PASSWORD_DEFAULT);
+        if (!empty($password)) {
+            $usuario->password = password_hash($password, PASSWORD_DEFAULT);
         }
         
         $usuario->update();
         
         session()->flash('success', 'Usuario actualizado correctamente');
-        header('Location: ' . BASE_URL . '/usuarios/index.php');
+        header('Location: ' . BASE_URL . '/admin/usuarios.php');
         exit;
     }
     
@@ -417,14 +516,14 @@ class AdminController
         // No permitir eliminar al usuario actual
         if ($id == Auth::id()) {
             session()->flash('error', 'No puedes eliminar tu propio usuario');
-            header('Location: ' . BASE_URL . '/usuarios/index.php');
+            header('Location: ' . BASE_URL . '/admin/usuarios.php');
             exit;
         }
         
-        $usuario = Usuario::find($id);
+        $usuario = Usuario::find((int) $id);
         if (!$usuario) {
             session()->flash('error', 'Usuario no encontrado');
-            header('Location: ' . BASE_URL . '/usuarios/index.php');
+            header('Location: ' . BASE_URL . '/admin/usuarios.php');
             exit;
         }
         
@@ -435,7 +534,7 @@ class AdminController
         DB::delete("DELETE FROM usuarios WHERE id = ?", [$id]);
         
         session()->flash('success', 'Usuario eliminado correctamente');
-        header('Location: ' . BASE_URL . '/usuarios/index.php');
+        header('Location: ' . BASE_URL . '/admin/usuarios.php');
         exit;
     }
     
@@ -457,10 +556,10 @@ class AdminController
      */
     public function deleteValoracion($id)
     {
-        $valoracion = Valoracion::find($id);
+        $valoracion = Valoracion::find((int) $id);
         if (!$valoracion) {
             session()->flash('error', 'Valoración no encontrada');
-            header('Location: ' . BASE_URL . '/valoraciones/index.php');
+            header('Location: ' . BASE_URL . '/admin/valoraciones.php');
             exit;
         }
         
@@ -468,7 +567,7 @@ class AdminController
         DB::delete("DELETE FROM valoraciones WHERE id = ?", [$id]);
         
         session()->flash('success', 'Valoración eliminada correctamente');
-        header('Location: ' . BASE_URL . '/valoraciones/index.php');
+        header('Location: ' . BASE_URL . '/admin/valoraciones.php');
         exit;
     }
     
@@ -495,7 +594,17 @@ class AdminController
             'title' => 'Crear Productor - LoopLab'
         ]);
     }
-    
+
+    /**
+     * Formulario para crear un nuevo género
+     */
+    public function createGenero()
+    {
+        view('admin.generos.create', [
+            'title' => 'Crear Género - LoopLab'
+        ]);
+    }
+
     /**
      * Guarda un nuevo productor
      */
@@ -504,7 +613,7 @@ class AdminController
         // Validar datos
         if (empty($request->nombre)) {
             session()->flash('error', 'El nombre es obligatorio');
-            header('Location: ' . BASE_URL . '/productores/create.php');
+            header('Location: ' . BASE_URL . '/admin/productores/create.php');
             exit;
         }
         
@@ -514,7 +623,29 @@ class AdminController
         $productor->insert();
         
         session()->flash('success', 'Productor creado correctamente');
-        header('Location: ' . BASE_URL . '/productores/index.php');
+        header('Location: ' . BASE_URL . '/admin/productores.php');
+        exit;
+    }
+
+    /**
+     * Guarda un nuevo género
+     */
+    public function storeGenero(Request $request)
+    {
+        // Validar datos
+        if (empty($request->nombre)) {
+            session()->flash('error', 'El nombre es obligatorio');
+            header('Location: ' . BASE_URL . '/admin/generos/create.php');
+            exit;
+        }
+        
+        // Crear el género
+        $genero = new Genero();
+        $genero->nombre = $request->nombre;
+        $genero->insert();
+        
+        session()->flash('success', 'Género creado correctamente');
+        header('Location: ' . BASE_URL . '/admin/generos.php');
         exit;
     }
     
@@ -523,10 +654,10 @@ class AdminController
      */
     public function editProductor($id)
     {
-        $productor = Productor::find($id);
+        $productor = Productor::find((int) $id);
         if (!$productor) {
             session()->flash('error', 'Productor no encontrado');
-            header('Location: ' . BASE_URL . '/productores/index.php');
+            header('Location: ' . BASE_URL . '/admin/productores.php');
             exit;
         }
         
@@ -541,17 +672,17 @@ class AdminController
      */
     public function updateProductor($id, Request $request)
     {
-        $productor = Productor::find($id);
+        $productor = Productor::find((int) $id);
         if (!$productor) {
             session()->flash('error', 'Productor no encontrado');
-            header('Location: ' . BASE_URL . '/productores/index.php');
+            header('Location: ' . BASE_URL . '/admin/productores.php');
             exit;
         }
         
         // Validar datos
         if (empty($request->nombre)) {
             session()->flash('error', 'El nombre es obligatorio');
-            header('Location: ' . BASE_URL . '/productores/edit.php?id=' . $id);
+            header('Location: ' . BASE_URL . '/admin/productores/edit.php?id=' . $id);
             exit;
         }
         
@@ -560,7 +691,7 @@ class AdminController
         $productor->update();
         
         session()->flash('success', 'Productor actualizado correctamente');
-        header('Location: ' . BASE_URL . '/productores/index.php');
+        header('Location: ' . BASE_URL . '/admin/productores.php');
         exit;
     }
     
@@ -569,10 +700,10 @@ class AdminController
      */
     public function deleteProductor($id)
     {
-        $productor = Productor::find($id);
+        $productor = Productor::find((int) $id);
         if (!$productor) {
             session()->flash('error', 'Productor no encontrado');
-            header('Location: ' . BASE_URL . '/productores/index.php');
+            header('Location: ' . BASE_URL . '/admin/productores.php');
             exit;
         }
         
@@ -582,7 +713,7 @@ class AdminController
         
         if ((int)$result[0]['count'] > 0) {
             session()->flash('error', 'No se puede eliminar el productor porque tiene instrumentales asociados');
-            header('Location: ' . BASE_URL . '/productores/index.php');
+            header('Location: ' . BASE_URL . '/admin/productores.php');
             exit;
         }
         
@@ -590,7 +721,7 @@ class AdminController
         DB::delete("DELETE FROM productores WHERE id = ?", [$id]);
         
         session()->flash('success', 'Productor eliminado correctamente');
-        header('Location: ' . BASE_URL . '/productores/index.php');
+        header('Location: ' . BASE_URL . '/admin/productores.php');
         exit;
     }
     
@@ -612,46 +743,14 @@ class AdminController
     }
     
     /**
-     * Formulario para crear un nuevo género
-     */
-    public function createGenero()
-    {
-        view('admin.generos.create', [
-            'title' => 'Crear Género - LoopLab'
-        ]);
-    }
-    
-    /**
-     * Guarda un nuevo género
-     */
-    public function storeGenero(Request $request)
-    {
-        // Validar datos
-        if (empty($request->nombre)) {
-            session()->flash('error', 'El nombre es obligatorio');
-            header('Location: ' . BASE_URL . '/generos/create.php');
-            exit;
-        }
-        
-        // Crear el género
-        $genero = new Genero();
-        $genero->nombre = $request->nombre;
-        $genero->insert();
-        
-        session()->flash('success', 'Género creado correctamente');
-        header('Location: ' . BASE_URL . '/generos/index.php');
-        exit;
-    }
-    
-    /**
      * Formulario para editar un género
      */
     public function editGenero($id)
     {
-        $genero = Genero::find($id);
+        $genero = Genero::find((int) $id);
         if (!$genero) {
             session()->flash('error', 'Género no encontrado');
-            header('Location: ' . BASE_URL . '/generos/index.php');
+            header('Location: ' . BASE_URL . '/admin/generos.php');
             exit;
         }
         
@@ -666,17 +765,17 @@ class AdminController
      */
     public function updateGenero($id, Request $request)
     {
-        $genero = Genero::find($id);
+        $genero = Genero::find((int) $id);
         if (!$genero) {
             session()->flash('error', 'Género no encontrado');
-            header('Location: ' . BASE_URL . '/generos/index.php');
+            header('Location: ' . BASE_URL . '/admin/generos.php');
             exit;
         }
         
         // Validar datos
         if (empty($request->nombre)) {
             session()->flash('error', 'El nombre es obligatorio');
-            header('Location: ' . BASE_URL . '/generos/edit.php?id=' . $id);
+            header('Location: ' . BASE_URL . '/admin/generos/edit.php?id=' . $id);
             exit;
         }
         
@@ -685,7 +784,7 @@ class AdminController
         $genero->update();
         
         session()->flash('success', 'Género actualizado correctamente');
-        header('Location: ' . BASE_URL . '/generos/index.php');
+        header('Location: ' . BASE_URL . '/admin/generos.php');
         exit;
     }
     
@@ -694,10 +793,10 @@ class AdminController
      */
     public function deleteGenero($id)
     {
-        $genero = Genero::find($id);
+        $genero = Genero::find((int) $id);
         if (!$genero) {
             session()->flash('error', 'Género no encontrado');
-            header('Location: ' . BASE_URL . '/generos/index.php');
+            header('Location: ' . BASE_URL . '/admin/generos.php');
             exit;
         }
         
@@ -707,15 +806,15 @@ class AdminController
         
         if ((int)$result[0]['count'] > 0) {
             session()->flash('error', 'No se puede eliminar el género porque tiene instrumentales asociados');
-            header('Location: ' . BASE_URL . '/generos/index.php');
+            header('Location: ' . BASE_URL . '/admin/generos.php');
             exit;
         }
         
         // Eliminar género
-        DB::delete("DELETE FROM generos WHERE id = ?", [$id]);
+        DB::delete("DELETE FROM genero_musical WHERE id = ?", [$id]);
         
         session()->flash('success', 'Género eliminado correctamente');
-        header('Location: ' . BASE_URL . '/generos/index.php');
+        header('Location: ' . BASE_URL . '/admin/generos.php');
         exit;
     }
 }

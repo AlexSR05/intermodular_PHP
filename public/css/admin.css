@@ -65,7 +65,7 @@ body {
 }
 
 .admin-header .nav-link {
-  color: rgb(142, 142, 142);
+  color: rgb(200, 200, 200);
   padding: 0.5rem 1rem;
   transition: color 0.3s ease;
 }

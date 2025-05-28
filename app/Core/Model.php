@@ -114,14 +114,30 @@ abstract class Model
         return DB::select(static::class, $sql);
     }
 
-    public static function find(int $id): ?static
+    public static function find($id): ?static
     {
-        $sql = "SELECT * FROM " . static::$table . " WHERE id = :id";
-        $params = [':id' => $id];
-        return DB::selectOne(static::class, $sql, $params);
+        // Convertir explícitamente a entero
+        $id = (int) $id;
+        
+        // Debug para verificar el ID
+        if (defined('DEBUG') && DEBUG) {
+            error_log("Model::find - Buscando ID: " . $id . " en tabla: " . static::$table);
+        }
+        
+        $sql = "SELECT * FROM " . static::$table . " WHERE id = ?";
+        $params = [$id];
+        
+        $result = DB::selectOne(static::class, $sql, $params);
+        
+        // Debug para verificar el resultado
+        if (defined('DEBUG') && DEBUG) {
+            error_log("Model::find - Resultado: " . ($result ? "Encontrado" : "No encontrado"));
+        }
+        
+        return $result;
     }
 
-    public static function findOrFail(int $id): static
+    public static function findOrFail($id): static
     {
         $model = self::find($id);
 
@@ -142,8 +158,8 @@ abstract class Model
 
     public function delete(): bool
     {
-        $sql = "DELETE FROM " . static::$table . " WHERE id = :id";
-        $params = ['id' => $this->id];
+        $sql = "DELETE FROM " . static::$table . " WHERE id = ?";
+        $params = [$this->id];
         return DB::delete($sql, $params) === 1;
     }
 }

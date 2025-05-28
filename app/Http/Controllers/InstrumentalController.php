@@ -69,7 +69,7 @@ class InstrumentalController
             $instrumentales = Instrumental::orderBy('fecha_creacion', 'DESC')->get();
         }
         
-        view('instrumentales.instrumentales_index', ['instrumentales' => $instrumentales]);
+        view('instrumentales.instrumentales_index', ['instrumentales' => $instrumentales, 'title' => 'LoopLab - Nuestras Instrumentales']);
     }
 
     public function show(int $id): void
