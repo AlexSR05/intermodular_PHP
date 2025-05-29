@@ -84,7 +84,6 @@ class CartController
             back()->with('error', 'Artículo no encontrado en la cesta.')->send();
         }
 
-        // Para instrumentales, la cantidad siempre es 1 ya que son productos únicos
         if ($articulo_tipo === 'instrumental') {
             $cantidad = 1;
         }

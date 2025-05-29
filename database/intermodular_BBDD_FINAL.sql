@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-05-2025 a las 19:50:20
+-- Tiempo de generación: 29-05-2025 a las 15:37:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `intermodular`
 --
+CREATE DATABASE IF NOT EXISTS `intermodular` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `intermodular`;
 
 DELIMITER $$
 --
@@ -216,7 +218,7 @@ CREATE TABLE `instrumentales` (
   `id` int(11) NOT NULL,
   `titulo` varchar(255) DEFAULT NULL,
   `bpm` int(11) DEFAULT NULL,
-  `fecha_creacion` date DEFAULT NULL,
+  `fecha_creacion` date DEFAULT current_timestamp(),
   `id_productor` int(11) DEFAULT NULL,
   `imagen` text NOT NULL,
   `audio` text DEFAULT NULL,
@@ -228,14 +230,12 @@ CREATE TABLE `instrumentales` (
 --
 
 INSERT INTO `instrumentales` (`id`, `titulo`, `bpm`, `fecha_creacion`, `id_productor`, `imagen`, `audio`, `precio`) VALUES
-(15, 'Cailé', 128, '2025-02-06', 3, 'uploads/imagen5beat.jpg', NULL, 20.99),
-(18, 'Retro\'s', 145, '2025-02-11', 1, 'uploads/imagen4beat.jpg', NULL, 14.99),
 (20, 'Bulletproof', 145, '2025-02-13', 1, 'uploads/imagen2beat.jpg', NULL, 9.99),
 (22, 'Miami', 160, '2025-02-13', 10, 'uploads/imagen1beat.jpg', NULL, 40.00),
 (24, 'No Mercy', 140, '2025-02-13', 3, 'uploads/imagen8beat.jpg', NULL, 6.99),
 (25, 'Dákiti', 180, '2025-02-13', 11, 'uploads/imagen9beat.jpg', NULL, 1.98),
 (26, 'Feroz', 80, '2025-02-24', 11, 'uploads/imagen10beat.jpg', NULL, 19.99),
-(27, 'Fuera de Comfort', 94, '2025-02-25', 1, 'uploads/imagen11beat.jpg', 'audiouploads/FueraDeComfort.mp3', 14.99);
+(27, 'Fuera de Comfort', 100, '2025-02-25', 1, 'uploads/imagen11beat.jpg', 'audiouploads/FueraDeComfort.mp3', 14.99);
 
 -- --------------------------------------------------------
 
@@ -286,14 +286,12 @@ CREATE TABLE `pertenecer` (
 --
 
 INSERT INTO `pertenecer` (`id_instrumental`, `id_genero`) VALUES
-(15, 5),
-(18, 4),
 (20, 2),
 (22, 2),
 (24, 5),
-(25, 3),
+(25, 2),
 (26, 3),
-(27, 7);
+(27, 1);
 
 -- --------------------------------------------------------
 
@@ -395,9 +393,38 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `role`, `fecha_creacion`) VALUES
-(1, 'Alejandro Sánchez Ruiz', 'ico440829@gmail.com', '$2y$10$vCl1rs0FXeZcbC7HPI7k3u5GcFhubhmQpFiznDW7jsl', 'admin', '2025-02-25'),
-(2, 'Ricardo Reñones Domrachev', 'alexsanchezgradomedio@gmail.com', '$2y$10$wKwVnt3oVnXa7ZMcPhdoGeNsrGZnGhmtaXsdHpeHk1T', 'user', '2025-02-25'),
-(10, 'Alejandro', 'prueba1@gmail.com', '$2y$10$aEOkOO2oVbeVz8a1evtWce8ymDCIy.KoqbjnIRdYoc/OGMwRJzJ4K', 'user', '2025-05-15');
+(10, 'Alejandro', 'prueba1@gmail.com', '$2y$10$i6TKU93romVTI5mpltIJ8uekYcyMUFmfbaHFbtym8Khpsxe1s4DZe', 'user', '2025-05-15'),
+(12, 'Admin', 'admin@gmail.com', '$2y$10$yJVT0DC/OVM31hZBjHCG0OYK1NbjgrVoIXw3WHoHNxUOvpNN2PnC2', 'admin', '2025-05-19');
+
+--
+-- Disparadores `usuarios`
+--
+DELIMITER $$
+CREATE TRIGGER `after_delete_usuario` AFTER DELETE ON `usuarios` FOR EACH ROW BEGIN
+    INSERT INTO usuarios_eliminados (email)
+    VALUES (OLD.email);
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios_eliminados`
+--
+
+CREATE TABLE `usuarios_eliminados` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `fecha_eliminacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios_eliminados`
+--
+
+INSERT INTO `usuarios_eliminados` (`id`, `email`, `fecha_eliminacion`) VALUES
+(1, 'jxice@gmail.com', '2025-05-29 13:30:06');
 
 -- --------------------------------------------------------
 
@@ -418,9 +445,8 @@ CREATE TABLE `valoraciones` (
 --
 
 INSERT INTO `valoraciones` (`id`, `comentario`, `fecha_valoracion`, `num_valoracion`, `id_usuario`) VALUES
-(4, 'Caca', '2025-05-15', 1, 10),
-(5, 'Mierdon de pagina', '2025-05-15', 1, 10),
-(6, 'aenaerykms', '2025-05-15', 5, 10);
+(11, 'Buena página para no usarla 👌', '2025-05-22', 1, NULL),
+(12, 'Locura de página a ver si la eliminan 🤯', '2025-05-28', 5, NULL);
 
 --
 -- Índices para tablas volcadas
@@ -552,6 +578,12 @@ ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `usuarios_eliminados`
+--
+ALTER TABLE `usuarios_eliminados`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `valoraciones`
 --
 ALTER TABLE `valoraciones`
@@ -584,7 +616,7 @@ ALTER TABLE `genero_musical`
 -- AUTO_INCREMENT de la tabla `instrumentales`
 --
 ALTER TABLE `instrumentales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `licencia`
@@ -614,13 +646,19 @@ ALTER TABLE `recibo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios_eliminados`
+--
+ALTER TABLE `usuarios_eliminados`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `valoraciones`
 --
 ALTER TABLE `valoraciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

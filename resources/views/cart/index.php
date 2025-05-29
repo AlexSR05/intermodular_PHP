@@ -48,7 +48,6 @@
                                             $articulo_tipo = $keyParts['articulo_tipo'];
                                             $variante_id = $keyParts['variante_id'];
                                             
-                                            // Get the instrumental details
                                             $instrumental = \App\Models\Instrumental::find($articulo_id);
                                         ?>
                                         <tr>
